@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html
+ 
+lang="en">
+
+<head>
+
+    
+<meta
+ 
+charset="UTF-8">
+
+    
+<meta
+ 
+name="viewport"
+ 
+content="width=device-width, initial-scale=1.0">
+
+    
+<title>Data Hiding Website</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .hide-data-form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .hide-data-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .hide-data-form input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .hide-data-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .hidden-data-container {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .hidden-data-container img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .hidden-data-container p {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Data Hiding Website</h1>
+
+    <form class="hide-data-form">
+        <label for="image">Image URL:</label>
+        <input type="text" id="image" name="image" placeholder="Enter image URL">
+
+        <label for="data">Data to hide:</label>
+        <textarea id="data" name="data" placeholder="Enter data to hide"></textarea>
+
+        <button class="hide-data-button">Hide Data</button>
+    </form>
+
+    <div class="hidden-data-container">
+        <img src="" alt="Hidden Data Image">
+
+        <p>Hidden Data:</p>
+        <p id="hidden-data"></p>
+    </div>
+
+    <script>
+        const hideDataButton = document.querySelector('.hide-data-button');
+        const hiddenDataContainer = document.querySelector('.hidden-data-container');
+        const hiddenDataImage = hiddenDataContainer.querySelector('img');
+        const hiddenDataText = hiddenDataContainer.querySelector('#hidden-data');
+
+        hideDataButton.addEventListener('click', () => {
+            const imageUrl = document.querySelector('#image').value;
+            const data = document.querySelector('#data').value;
+
+            // Send data to the server to hide it in the image
+            // and receive the modified image URL
+            fetch('/hide-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    imageUrl,
+                    data
+                })
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.success) {
+                    hiddenDataImage.src = responseData.imageUrl;
+                    hiddenDataText.textContent = responseData.hiddenData;
+
+                    hiddenDataContainer.style.display = 'block';
+                } else {
+                    alert('Error hiding data: ' + responseData.error);
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
